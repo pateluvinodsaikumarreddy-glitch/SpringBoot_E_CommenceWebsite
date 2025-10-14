@@ -33,10 +33,14 @@ public class UserController {
 
     @GetMapping("/api/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id){
-        User user = userService.fetchUser(id);
-        if(user == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(user);
+//        User user = userService.fetchUser(id);
+//        if(user == null)
+//            return ResponseEntity.notFound().build();
+//        return ResponseEntity.ok(user);
+// Using Streams
+        return userService.fetchUser(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/api/users")
