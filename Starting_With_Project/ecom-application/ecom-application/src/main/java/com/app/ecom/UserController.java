@@ -13,17 +13,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-
-//    @Autowired
-//  private UserService userService; or you just use constructor
-
-// Instead of this you can use Loombook based anotations @RequiredArgsConstructor
-//    private UserService userService;
-//    public UserController(UserService userService) {
-//        this.userService = userService;
-//    }
-
-
     @GetMapping("/api/users")
     public ResponseEntity<List<User>> getAllUsers(){
            // return ResponseEntity.ok(userService.fetchAllUsers()); this will also work
@@ -33,11 +22,6 @@ public class UserController {
 
     @GetMapping("/api/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id){
-//        User user = userService.fetchUser(id);
-//        if(user == null)
-//            return ResponseEntity.notFound().build();
-//        return ResponseEntity.ok(user);
-// Using Streams
         return userService.fetchUser(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -48,5 +32,15 @@ public class UserController {
         userService.addUser(user);
         return ResponseEntity.ok("User Added Succesfully");
     }
+
+    @PutMapping ("/api/users/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable Long id,@RequestBody User updatedUser){
+       boolean updated  = userService.updateUser(id,updatedUser);
+       if(updated)
+           return ResponseEntity.ok("User Updated Sucessfully");
+
+        return ResponseEntity.notFound().build();
+    }
+
 
 }
